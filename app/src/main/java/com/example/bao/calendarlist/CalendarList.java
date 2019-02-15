@@ -22,29 +22,31 @@ import java.util.List;
 
 public class CalendarList extends FrameLayout {
     private static final String TAG = MainActivity.class.getSimpleName() + "_LOG";
+    public Context mContext;
     RecyclerView recyclerView;
     CalendarAdapter adapter;
     private DateBean startDate;//开始时间
     private DateBean endDate;//结束时间
     OnDateSelected onDateSelected;//选中监听
-    SimpleDateFormat simpleDateFormat=new SimpleDateFormat("yyyy-MM-dd");
+    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
     public CalendarList(Context context) {
         super(context);
         init(context);
     }
 
-    public CalendarList(Context context,AttributeSet attrs) {
+    public CalendarList(Context context, AttributeSet attrs) {
         super(context, attrs);
         init(context);
     }
 
-    public CalendarList(Context context,AttributeSet attrs, int defStyleAttr) {
+    public CalendarList(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init(context);
     }
 
     private void init(Context context) {
+        mContext=context;
         addView(LayoutInflater.from(context).inflate(R.layout.item_calendar, this, false));
 
         recyclerView = findViewById(R.id.recyclerView);
@@ -74,6 +76,7 @@ public class CalendarList extends FrameLayout {
         adapter.setOnRecyclerviewItemClick(new CalendarAdapter.OnRecyclerviewItemClick() {
             @Override
             public void onItemClick(View v, int position) {
+                if (adapter.data.get(position).getItemState() == DateBean.ITEM_STATE_ENABLE) return;
                 onClick(adapter.data.get(position));
             }
         });
@@ -88,7 +91,10 @@ public class CalendarList extends FrameLayout {
         //如果没有选中开始日期则此次操作选中开始日期
         if (startDate == null) {
             startDate = dateBean;
+            setAfter30();
+
             dateBean.setItemState(DateBean.ITEM_STATE_BEGIN_DATE);
+
         } else if (endDate == null) {
             //如果选中了开始日期但没有选中结束日期，本次操作选中结束日期
 
@@ -97,34 +103,54 @@ public class CalendarList extends FrameLayout {
 
             } else if (dateBean.getDate().getTime() < startDate.getDate().getTime()) {
                 //当前点选的日期小于当前选中的开始日期 则本次操作重新选中开始日期
+
                 startDate.setItemState(DateBean.ITEM_STATE_NORMAL);
                 startDate = dateBean;
+                setAfter30();
                 startDate.setItemState(DateBean.ITEM_STATE_BEGIN_DATE);
+
             } else {
                 //选中结束日期
                 endDate = dateBean;
                 endDate.setItemState(DateBean.ITEM_STATE_END_DATE);
                 setState();
 
-                if(onDateSelected!=null){
-                    onDateSelected.selected(simpleDateFormat.format(startDate.getDate()),simpleDateFormat.format(endDate.getDate()));
+                if (onDateSelected != null) {
+                    onDateSelected.selected(simpleDateFormat.format(startDate.getDate()), simpleDateFormat.format(endDate.getDate()));
                 }
             }
 
-        } else if (startDate != null && endDate != null) {
+        } else {
             //结束日期和开始日期都已选中
             clearState();
-
+            //清除结束日期
+            endDate.setItemState(DateBean.ITEM_STATE_NORMAL);
+            endDate = null;
             //重新选择开始日期,结束日期清除
             startDate.setItemState(DateBean.ITEM_STATE_NORMAL);
             startDate = dateBean;
+//            setAfter30();
             startDate.setItemState(DateBean.ITEM_STATE_BEGIN_DATE);
-
-            endDate.setItemState(DateBean.ITEM_STATE_NORMAL);
-            endDate = null;
         }
 
         adapter.notifyDataSetChanged();
+    }
+
+    private void setAfter30() {
+        int start = adapter.data.indexOf(startDate);
+        start += 1;
+        int begin = 0;
+        for (; start < adapter.data.size(); start++) {
+            DateBean bean = adapter.data.get(start);
+            if (!TextUtils.isEmpty(bean.getDay())) {
+                begin++;
+            }
+            if (begin > 28) {
+                adapter.data.get(start).setItemState(DateBean.ITEM_STATE_ENABLE);
+            } else {
+                adapter.data.get(start).setItemState(DateBean.ITEM_STATE_NORMAL);
+            }
+        }
     }
 
     //选中中间的日期
@@ -218,8 +244,9 @@ public class CalendarList extends FrameLayout {
 
                 //设置item状态
                 if (dateBean.getItemState() == DateBean.ITEM_STATE_BEGIN_DATE || dateBean.getItemState() == DateBean.ITEM_STATE_END_DATE) {
+
                     //开始日期或结束日期
-                    vh.itemView.setBackgroundColor(Color.parseColor("#ff6600"));
+                    vh.itemView.setBackgroundResource(R.drawable.dot_choose);
                     vh.tv_day.setTextColor(Color.WHITE);
                     vh.tv_check_in_check_out.setVisibility(View.VISIBLE);
                     if (dateBean.getItemState() == DateBean.ITEM_STATE_END_DATE) {
@@ -227,12 +254,19 @@ public class CalendarList extends FrameLayout {
                     } else {
                         vh.tv_check_in_check_out.setText("入住");
                     }
+                } /*else if (dateBean.getItemState() == DateBean.ITEM_STATE_ENABLE) {
+//                    Log.e("tag", "22-----"+i);
 
-                } else if (dateBean.getItemState() == DateBean.ITEM_STATE_SELECTED) {
+                    vh.tv_day.setTextColor(Color.LTGRAY);
+
+                }*/ else if (dateBean.getItemState() == DateBean.ITEM_STATE_SELECTED) {
+//                    Log.e("tag", "33-----"+i);
+
                     //选中状态
                     vh.itemView.setBackgroundColor(Color.parseColor("#ffa500"));
                     vh.tv_day.setTextColor(Color.WHITE);
                 } else {
+
                     //正常状态
                     vh.itemView.setBackgroundColor(Color.WHITE);
                     vh.tv_day.setTextColor(Color.BLACK);
@@ -452,8 +486,8 @@ public class CalendarList extends FrameLayout {
         return mWay;
     }
 
-    public interface OnDateSelected{
-        void selected(String startDate,String endDate);
+    public interface OnDateSelected {
+        void selected(String startDate, String endDate);
     }
 
     public void setOnDateSelected(OnDateSelected onDateSelected) {
