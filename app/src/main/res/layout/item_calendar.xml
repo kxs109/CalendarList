@@ -8,68 +8,76 @@
     tools:context=".MainActivity">
 
     <LinearLayout
-        android:orientation="horizontal"
-        android:background="#F2F2F2"
-        android:gravity="center_vertical"
         android:layout_width="match_parent"
-        android:paddingTop="10dp"
-        android:paddingBottom="10dp"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:background="#F5F5F5"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp">
 
         <TextView
             android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="日"
-            android:textColor="#ff6600"
             android:gravity="center"
-            android:layout_height="wrap_content" />
+            android:text="周日"
+            android:textColor="#4A4A4A"
+            android:textSize="10dp" />
 
         <TextView
             android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="一"
-            android:textColor="#666"
             android:gravity="center"
-            android:layout_height="wrap_content" />
+            android:text="周一"
+            android:textSize="10dp"
+            android:textColor="#4A4A4A" />
 
         <TextView
             android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="二"
-            android:textColor="#666"
             android:gravity="center"
-            android:layout_height="wrap_content" />
+            android:text="周二"
+            android:textColor="#4A4A4A"
+            android:textSize="10dp" />
 
         <TextView
             android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="三"
-            android:textColor="#666"
             android:gravity="center"
-            android:layout_height="wrap_content" />
+            android:text="周三"
+            android:textColor="#4A4A4A"
+            android:textSize="10dp" />
 
         <TextView
             android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="四"
-            android:textColor="#666"
             android:gravity="center"
-            android:layout_height="wrap_content" />
+            android:text="周四"
+            android:textColor="#4A4A4A"
+            android:textSize="10dp" />
 
         <TextView
             android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="五"
             android:gravity="center"
-            android:layout_height="wrap_content" />
+            android:text="周五"
+            android:textColor="#4A4A4A"
+            android:textSize="10dp" />
 
         <TextView
             android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="六"
-            android:textColor="#ff6600"
             android:gravity="center"
-            android:layout_height="wrap_content" />
+            android:text="周六"
+            android:textColor="#4A4A4A"
+            android:textSize="10dp" />
 
     </LinearLayout>
 

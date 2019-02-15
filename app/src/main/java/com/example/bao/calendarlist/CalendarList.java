@@ -207,7 +207,7 @@ public class CalendarList extends FrameLayout {
                 View rootView = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_day, viewGroup, false);
 
                 final CalendarAdapter.DayViewHolder dayViewHolder = new CalendarAdapter.DayViewHolder(rootView);
-                dayViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+                dayViewHolder.itemView.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         if (onRecyclerviewItemClick != null) {
@@ -219,7 +219,7 @@ public class CalendarList extends FrameLayout {
             } else if (i == DateBean.item_type_month) {
                 View rootView = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_month, viewGroup, false);
                 final CalendarAdapter.MonthViewHolder monthViewHolder = new CalendarAdapter.MonthViewHolder(rootView);
-                monthViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+                monthViewHolder.itemView.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         if (onRecyclerviewItemClick != null) {
