@@ -46,7 +46,7 @@ public class CalendarList extends FrameLayout {
     }
 
     private void init(Context context) {
-        mContext=context;
+        mContext = context;
         addView(LayoutInflater.from(context).inflate(R.layout.item_calendar, this, false));
 
         recyclerView = findViewById(R.id.recyclerView);
@@ -61,6 +61,7 @@ public class CalendarList extends FrameLayout {
                     return 1;
                 }
             }
+
         });
         recyclerView.setLayoutManager(gridLayoutManager);
         recyclerView.setAdapter(adapter);
@@ -205,7 +206,6 @@ public class CalendarList extends FrameLayout {
         public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
             if (i == DateBean.item_type_day) {
                 View rootView = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_day, viewGroup, false);
-
                 final CalendarAdapter.DayViewHolder dayViewHolder = new CalendarAdapter.DayViewHolder(rootView);
                 dayViewHolder.itemView.setOnClickListener(new OnClickListener() {
                     @Override
