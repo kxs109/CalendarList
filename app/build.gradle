@@ -1,10 +1,11 @@
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
 
 android {
     compileSdkVersion 28
     defaultConfig {
         applicationId "com.example.bao.calendarlist"
-        minSdkVersion 15
+        minSdkVersion 19
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
@@ -28,4 +29,10 @@ dependencies {
     implementation 'com.timehop.stickyheadersrecyclerview:library:0.4.3'
 
     implementation 'com.android.support:recyclerview-v7:28.0.0'
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+
+    compile 'com.github.zyyoona7:EasyPopup:1.1.2'
+}
+repositories {
+    mavenCentral()
 }

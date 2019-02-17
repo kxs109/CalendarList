@@ -13,7 +13,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -28,7 +30,10 @@ public class CalendarList extends FrameLayout {
     private DateBean startDate;//开始时间
     private DateBean endDate;//结束时间
     OnDateSelected onDateSelected;//选中监听
-    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM-dd");
+    private Date today;
+    private TextView tvStartTime;
+    private TextView tvEndTime;
 
     public CalendarList(Context context) {
         super(context);
@@ -50,6 +55,10 @@ public class CalendarList extends FrameLayout {
         addView(LayoutInflater.from(context).inflate(R.layout.item_calendar, this, false));
 
         recyclerView = findViewById(R.id.recyclerView);
+
+        tvStartTime = findViewById(R.id.start_time_hint);
+        tvEndTime = findViewById(R.id.end_time_hint);
+
         adapter = new CalendarAdapter();
         GridLayoutManager gridLayoutManager = new GridLayoutManager(context, 7);
         gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
@@ -67,9 +76,6 @@ public class CalendarList extends FrameLayout {
         recyclerView.setAdapter(adapter);
         adapter.data.addAll(days("", ""));
 
-//        DividerItemDecoration dividerItemDecoration=new DividerItemDecoration(this,DividerItemDecoration.VERTICAL);
-//        dividerItemDecoration.setDrawable(ContextCompat.getDrawable(this,R.drawable.shape));
-//        recyclerView.addItemDecoration(dividerItemDecoration);
 
         MyItemD myItemD = new MyItemD();
         recyclerView.addItemDecoration(myItemD);
@@ -92,7 +98,7 @@ public class CalendarList extends FrameLayout {
         //如果没有选中开始日期则此次操作选中开始日期
         if (startDate == null) {
             startDate = dateBean;
-            setAfter30();
+//            setAfter30();
 
             dateBean.setItemState(DateBean.ITEM_STATE_BEGIN_DATE);
 
@@ -107,18 +113,16 @@ public class CalendarList extends FrameLayout {
 
                 startDate.setItemState(DateBean.ITEM_STATE_NORMAL);
                 startDate = dateBean;
-                setAfter30();
+//                setAfter30();
                 startDate.setItemState(DateBean.ITEM_STATE_BEGIN_DATE);
 
             } else {
+                startDate.setItemState(DateBean.ITEM_STATE_START);
+
                 //选中结束日期
                 endDate = dateBean;
                 endDate.setItemState(DateBean.ITEM_STATE_END_DATE);
                 setState();
-
-                if (onDateSelected != null) {
-                    onDateSelected.selected(simpleDateFormat.format(startDate.getDate()), simpleDateFormat.format(endDate.getDate()));
-                }
             }
 
         } else {
@@ -133,9 +137,40 @@ public class CalendarList extends FrameLayout {
 //            setAfter30();
             startDate.setItemState(DateBean.ITEM_STATE_BEGIN_DATE);
         }
+        //入住时间，结束时间 ======提示
+        if (startDate != null) {
+            tvStartTime.setText(simpleDateFormat.format(startDate.date) + "(" + getWeek(startDate.date) + ")");
+        } else {
+            tvStartTime.setText("入住时间");
+        }
+        if (endDate != null) {
+            tvEndTime.setText(simpleDateFormat.format(endDate.date) + "(" + getWeek(endDate.date) + ")");
+        } else {
+            tvEndTime.setText("");
+        }
 
+        if (onDateSelected != null) {
+            if (startDate!=null&&endDate!=null){
+                onDateSelected.selected(startDate.getDate(), endDate.getDate());
+            }else{
+                if (startDate!=null){
+                    onDateSelected.selected(startDate.getDate(), null);
+                }else{
+                    onDateSelected.selected(null, endDate.getDate());
+
+                }
+            }
+        }
         adapter.notifyDataSetChanged();
     }
+
+    private int getWeek(Date date) {
+        Calendar c = Calendar.getInstance();
+        c.setTime(date);
+        return c.get(Calendar.DAY_OF_WEEK) - 1;
+    }
+
+
 
     private void setAfter30() {
         int start = adapter.data.indexOf(startDate);
@@ -243,30 +278,31 @@ public class CalendarList extends FrameLayout {
                 DateBean dateBean = data.get(i);
 
                 //设置item状态
-                if (dateBean.getItemState() == DateBean.ITEM_STATE_BEGIN_DATE || dateBean.getItemState() == DateBean.ITEM_STATE_END_DATE) {
+                if (dateBean.getItemState() == DateBean.ITEM_STATE_BEGIN_DATE) {
 
                     //开始日期或结束日期
                     vh.itemView.setBackgroundResource(R.drawable.dot_choose);
                     vh.tv_day.setTextColor(Color.WHITE);
-                    vh.tv_check_in_check_out.setVisibility(View.VISIBLE);
-                    if (dateBean.getItemState() == DateBean.ITEM_STATE_END_DATE) {
-                        vh.tv_check_in_check_out.setText("离店");
-                    } else {
-                        vh.tv_check_in_check_out.setText("入住");
-                    }
-                } /*else if (dateBean.getItemState() == DateBean.ITEM_STATE_ENABLE) {
-//                    Log.e("tag", "22-----"+i);
+//                    vh.tv_check_in_check_out.setVisibility(View.VISIBLE);
+//                    if (dateBean.getItemState() == DateBean.ITEM_STATE_END_DATE) {
+//                        vh.tv_check_in_check_out.setText("离店");
+//                    } else {
+//                        vh.tv_check_in_check_out.setText("入住");
+//                    }
 
-                    vh.tv_day.setTextColor(Color.LTGRAY);
-
-                }*/ else if (dateBean.getItemState() == DateBean.ITEM_STATE_SELECTED) {
-//                    Log.e("tag", "33-----"+i);
-
+                } else if (dateBean.getItemState() == DateBean.ITEM_STATE_START) {
+                    vh.tv_day.setTextColor(Color.WHITE);
+                    vh.itemView.setBackgroundResource(R.drawable.dot_choose2);
+                } else if (dateBean.getItemState() == DateBean.ITEM_STATE_END_DATE) {
+                    vh.tv_day.setTextColor(Color.WHITE);
+                    vh.itemView.setBackgroundResource(R.drawable.dot_choose3);
+                } else if (dateBean.getItemState() == DateBean.ITEM_STATE_SELECTED) {
                     //选中状态
                     vh.itemView.setBackgroundColor(Color.parseColor("#ffa500"));
                     vh.tv_day.setTextColor(Color.WHITE);
+                } else if (dateBean.getItemState() == DateBean.ITEM_STATE_ENABLE) {
+                    vh.tv_day.setTextColor(Color.LTGRAY);
                 } else {
-
                     //正常状态
                     vh.itemView.setBackgroundColor(Color.WHITE);
                     vh.tv_day.setTextColor(Color.BLACK);
@@ -313,26 +349,26 @@ public class CalendarList extends FrameLayout {
             Calendar calendar = Calendar.getInstance();
             //日期格式化
             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-            SimpleDateFormat formatYYYYMM = new SimpleDateFormat("yyyy-MM");
+            SimpleDateFormat formatYYYYMM = new SimpleDateFormat("MM");
 
             //起始日期
-            Date startDate = new Date();
-            calendar.setTime(startDate);
+            today = new Date();
+            calendar.setTime(today);
 
             //结束日期
             calendar.add(Calendar.MONTH, 5);
             Date endDate = new Date(calendar.getTimeInMillis());
 
-            Log.d(TAG, "startDate:" + format.format(startDate) + "----------endDate:" + format.format(endDate));
+            Log.d(TAG, "startDate:" + format.format(today) + "----------endDate:" + format.format(endDate));
 
             //格式化开始日期和结束日期为 yyyy-mm-dd格式
             String endDateStr = format.format(endDate);
             endDate = format.parse(endDateStr);
 
-            String startDateStr = format.format(startDate);
-            startDate = format.parse(startDateStr);
+            String startDateStr = format.format(today);
+            today = format.parse(startDateStr);
 
-            calendar.setTime(startDate);
+            calendar.setTime(today);
 
             Log.d(TAG, "startDateStr:" + startDateStr + "---------endDate:" + format.format(endDate));
             Log.d(TAG, "endDateStr:" + endDateStr + "---------endDate:" + format.format(endDate));
@@ -408,6 +444,14 @@ public class CalendarList extends FrameLayout {
                     dateBean.setDate(monthCalendar.getTime());
                     dateBean.setDay(monthCalendar.get(Calendar.DAY_OF_MONTH) + "");
                     dateBean.setMonthStr(monthDateBean.getMonthStr());
+                    if (dateBean.getDate().before(today)) {
+                        dateBean.setItemState(DateBean.ITEM_STATE_ENABLE);
+                    } else if (dateBean.getDate().after(today)) {
+                        dateBean.setItemState(DateBean.ITEM_STATE_NORMAL);
+                    } else {
+                        startDate = dateBean;
+                        dateBean.setItemState(DateBean.ITEM_STATE_BEGIN_DATE);
+                    }
                     dateBeans.add(dateBean);
 
                     //处理一个月的最后一天
@@ -487,7 +531,7 @@ public class CalendarList extends FrameLayout {
     }
 
     public interface OnDateSelected {
-        void selected(String startDate, String endDate);
+        void selected(Date startDate, Date endDate);
     }
 
     public void setOnDateSelected(OnDateSelected onDateSelected) {
