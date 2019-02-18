@@ -7,11 +7,6 @@ import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.Toast;
-
-import com.zyyoona7.popup.EasyPopup;
-import com.zyyoona7.popup.XGravity;
-import com.zyyoona7.popup.YGravity;
 
 import java.util.Date;
 

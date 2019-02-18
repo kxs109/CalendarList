@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">CalendarList</string>
+
+
+
+    <string name="limit_room_unit">间数</string>
+    <string name="limit_adult_number">成人数</string>
+    <string name="limit_child_number">儿童数</string>
+    <string name="limit_child_age_hint">选择儿童年龄，我们为您精准筛选可入住房型</string>
 </resources>

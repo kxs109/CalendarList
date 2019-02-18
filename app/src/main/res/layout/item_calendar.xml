@@ -18,18 +18,20 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
-            android:text="入住时间"
+            android:text=""
+            android:textStyle="bold"
             android:textColor="#333333"
-            android:textSize="28dp" />
+            android:textSize="20sp" />
 
         <TextView
+            android:textStyle="bold"
             android:id="@+id/end_time_hint"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:text=""
-            android:textColor="#333333"
-            android:textSize="28dp" />
+            android:textColor="#388DFC"
+            android:textSize="20sp" />
 
     </RelativeLayout>
 

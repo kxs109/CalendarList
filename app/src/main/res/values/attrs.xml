@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+        <declare-styleable name="LimitView">
+            <attr name="type_name" format="string"/>
+            <attr name="most" format="integer"/>
+            <attr name="least" format="integer"/>
+            <attr name="num" format="integer"/>
+            <attr name="has_listener" format="boolean"/>
+        </declare-styleable>
+</resources>

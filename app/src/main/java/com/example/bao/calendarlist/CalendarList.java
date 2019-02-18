@@ -75,8 +75,7 @@ public class CalendarList extends FrameLayout {
         recyclerView.setLayoutManager(gridLayoutManager);
         recyclerView.setAdapter(adapter);
         adapter.data.addAll(days("", ""));
-
-
+        setTimeHint();
         MyItemD myItemD = new MyItemD();
         recyclerView.addItemDecoration(myItemD);
 
@@ -138,24 +137,15 @@ public class CalendarList extends FrameLayout {
             startDate.setItemState(DateBean.ITEM_STATE_BEGIN_DATE);
         }
         //入住时间，结束时间 ======提示
-        if (startDate != null) {
-            tvStartTime.setText(simpleDateFormat.format(startDate.date) + "(" + getWeek(startDate.date) + ")");
-        } else {
-            tvStartTime.setText("入住时间");
-        }
-        if (endDate != null) {
-            tvEndTime.setText(simpleDateFormat.format(endDate.date) + "(" + getWeek(endDate.date) + ")");
-        } else {
-            tvEndTime.setText("");
-        }
+        setTimeHint();
 
         if (onDateSelected != null) {
-            if (startDate!=null&&endDate!=null){
+            if (startDate != null && endDate != null) {
                 onDateSelected.selected(startDate.getDate(), endDate.getDate());
-            }else{
-                if (startDate!=null){
+            } else {
+                if (startDate != null) {
                     onDateSelected.selected(startDate.getDate(), null);
-                }else{
+                } else {
                     onDateSelected.selected(null, endDate.getDate());
 
                 }
@@ -164,12 +154,26 @@ public class CalendarList extends FrameLayout {
         adapter.notifyDataSetChanged();
     }
 
+    private void setTimeHint() {
+        if (startDate != null) {
+            tvStartTime.setText(simpleDateFormat.format(startDate.date) + "(" + getWeek(startDate.date) + ")");
+        } else {
+            tvStartTime.setText("入住日期");
+        }
+        if (endDate != null) {
+            tvEndTime.setTextColor(Color.parseColor("#333333"));
+            tvEndTime.setText(simpleDateFormat.format(endDate.date) + "(" + getWeek(endDate.date) + ")");
+        } else {
+            tvEndTime.setTextColor(Color.parseColor("#388DFC"));
+            tvEndTime.setText("退房日期");
+        }
+    }
+
     private int getWeek(Date date) {
         Calendar c = Calendar.getInstance();
         c.setTime(date);
         return c.get(Calendar.DAY_OF_WEEK) - 1;
     }
-
 
 
     private void setAfter30() {
